@@ -19,6 +19,25 @@ void StarterBot::onStart()
 
     // Call MapTools OnStart
     m_mapTools.onStart();
+	
+    if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Zerg)
+    {
+        for (BWAPI::Unit u : myUnits)
+        {
+            // If the unit is ovie
+            if (u->getType() == BWAPI::UnitTypes::Zerg_Overlord)
+            {
+                for (auto &SL : BWAPI::Broodwar->getStartLocations())
+                {
+                    if (SL != BWAPI::Broodwar->self()->getStartLocation())
+                    {
+                        u->patrol(static_cast<BWAPI::Position>(SL));
+                        break;
+                    }
+                }
+            }
+        }
+    }
 }
 
 // Called whenever the game ends and tells you if you won or not
