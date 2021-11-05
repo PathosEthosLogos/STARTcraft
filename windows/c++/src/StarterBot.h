@@ -30,4 +30,9 @@ public:
 	void onUnitShow(BWAPI::Unit unit);
 	void onUnitHide(BWAPI::Unit unit);
 	void onUnitRenegade(BWAPI::Unit unit);
+
+private:
+	// Since Zergs work with Larva, it needs special treatment
+	bool ovie_making = false;
+	int ovie_count = 1;
 };
