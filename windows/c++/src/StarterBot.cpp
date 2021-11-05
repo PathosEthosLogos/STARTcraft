@@ -42,6 +42,18 @@ void StarterBot::onFrame()
     // Build more supply if we are going to run out soon
     buildAdditionalSupply();
 
+    // Since Zergs work with Larva, it needs special treatment
+    if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Zerg)
+    {
+    	for (BWAPI::Unit u : BWAPI::Broodwar->self()->getUnits())
+    	{
+        	if (u->getType() == BWAPI::UnitTypes::Zerg_Egg && u->getBuildType() != BWAPI::UnitTypes::Zerg_Overlord)
+            	{
+			ovie_making = false;
+		}
+        }
+    }
+
     // Draw unit health bars, which brood war unfortunately does not do
     Tools::DrawUnitHealthBars();
 
@@ -102,6 +114,20 @@ void StarterBot::buildAdditionalSupply()
     if (startedBuilding)
     {
         BWAPI::Broodwar->printf("Started Building %s", supplyProviderType.getName().c_str());
+    }
+
+    // Since Zergs work with Larva, it needs special treatment
+    if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Zerg)
+    {
+	for (BWAPI::Unit u : BWAPI::Broodwar->self()->getUnits())
+        {
+            if (u->getType() == BWAPI::UnitTypes::Zerg_Larva && u->canTrain(BWAPI::UnitTypes::Zerg_Overlord) && ovie_making == false)
+            {
+                u->train(BWAPI::UnitTypes::Zerg_Overlord);
+                // Break out of the loop, because we only want to make one.
+                ovie_making = true;
+	    }
+        }
     }
 }
 
